@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self'; script-src 'self'; img-src 'self' https://cdn.modrinth.com data:">
+  <title>Electro</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <canvas id="fx" aria-hidden="true"></canvas>
+
+  <div class="app">
+    <header>
+      <div class="brand">
+        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true"><path d="M13.5 2 5 13.5h5.5L9.5 22 19 9.5h-5.8z"/></svg>
+        <span>Electro</span>
+      </div>
+      <div class="head-actions">
+        <button id="account" class="pill" aria-label="Аккаунт и настройки">
+          <span class="avatar" id="avatar">P</span><span id="who">Офлайн</span>
+        </button>
+        <button id="openSettings" class="icon" aria-label="Настройки">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
+        </button>
+        <button id="winMin" class="icon" data-i18n-title="minimize" aria-label="Свернуть" hidden>
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 12h12"/></svg>
+        </button>
+        <button id="winClose" class="icon close" data-i18n-title="quit" aria-label="Выход">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="stage">
+    <main class="hero">
+      <p class="sub">Minecraft Java Edition</p>
+      <button id="verBig" class="verbig" aria-haspopup="listbox" aria-label="Выбрать версию">
+        <span id="verTitle">1.12.2</span>
+        <svg viewBox="0 0 24 24" width="34" height="34" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+      <div class="chips" id="chips" role="group" aria-label="Быстрый выбор версии"></div>
+      <div class="chips loaders" id="loaders" role="group" aria-label="Loader"></div>
+
+      <div class="launch">
+        <label class="nick"><span data-i18n="nick">Ник</span><input id="nickname" maxlength="16" autocomplete="off" spellcheck="false"></label>
+        <button id="play" class="play">
+          <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M13.5 2 5 13.5h5.5L9.5 22 19 9.5h-5.8z"/></svg>
+          <span id="playText">Играть</span>
+        </button>
+      </div>
+      <p class="error" id="error" role="alert"></p>
+    </main>
+
+    <aside class="side" aria-label="Параметры запуска">
+      <button class="stat" id="sideDirCard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        <span class="stat-body"><span class="stat-title" data-i18n="folder">Папка игры</span><span class="stat-main" id="sideDir">…</span><span class="stat-sub" id="sideDirInfo"></span></span>
+        <span class="stat-act" data-i18n="change">Изменить</span>
+      </button>
+      <button class="stat" id="sideRamCard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="7" width="14" height="10" rx="2"/><path d="M9 7V4M15 7V4M9 20v-3M15 20v-3"/></svg>
+        <span class="stat-body"><span class="stat-title" data-i18n="memory">Память</span><span class="stat-main" id="sideRam">4 ГБ</span></span>
+        <span class="stat-act">Изменить</span>
+      </button>
+      <button class="stat" id="sideUserCard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>
+        <span class="stat-body"><span class="stat-title" data-i18n="profile">Профиль</span><span class="stat-main" id="sideUser">Player</span><span class="stat-sub" data-i18n="offlineMode">Офлайн-режим</span></span>
+        <span class="stat-act">Изменить</span>
+      </button>
+      <button class="stat" id="sideModsCard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 7.5v9L12 21l8-4.5v-9z"/><path d="M4 7.5 12 12l8-4.5M12 12v9"/></svg>
+        <span class="stat-body"><span class="stat-title" data-i18n="mods">Моды</span><span class="stat-main" id="sideMods">Vanilla</span><span class="stat-sub" id="sideModsInfo"></span></span>
+        <span class="stat-act" data-i18n="open">Открыть</span>
+      </button>
+    </aside>
+    </div>
+
+    <footer>
+      <div class="bar"><div id="bar"></div></div>
+      <div class="foot-row">
+        <p id="status">Готов к запуску</p>
+        <span id="pct" class="pct"></span>
+        <button id="toggleLog" class="link" data-i18n="journal">Журнал</button>
+      </div>
+    </footer>
+  </div>
+
+  <section class="picker" id="picker" hidden aria-label="Все версии">
+    <input id="search" data-i18n-ph="searchPh" placeholder="Поиск версии, например 1.16" autocomplete="off" spellcheck="false">
+    <label class="check"><input type="checkbox" id="snapshots"> <span data-i18n="snapshots">Показывать снапшоты</span></label>
+    <ul id="verList" role="listbox"></ul>
+  </section>
+
+  <aside class="drawer" id="drawer" hidden aria-label="Настройки">
+    <div class="drawer-head"><h2 data-i18n="settings">Настройки</h2><button id="closeSettings" class="icon" aria-label="Закрыть">✕</button></div>
+    <h3 data-i18n="language">Язык</h3>
+    <select id="lang" class="select" aria-label="Язык"></select>
+    <h3 data-i18n="theme">Стиль</h3>
+    <div class="themes">
+      <button class="theme-opt" data-theme="storm"><i class="sw sw-storm"></i><span data-i18n="themeStorm">Гроза</span></button>
+      <button class="theme-opt" data-theme="ball"><i class="sw sw-ball"></i><span data-i18n="themeBall">Шаровая молния</span></button>
+      <button class="theme-opt" data-theme="lithium"><i class="sw sw-lithium"></i><span data-i18n="themeLithium">Литий</span></button>
+      <button class="theme-opt" data-theme="zinc"><i class="sw sw-zinc"></i><span data-i18n="themeZinc">Цинк</span></button>
+    </div>
+    <h3 data-i18n="account">Аккаунт</h3>
+    <p class="muted" id="accText" data-i18n="accText">Игра запускается с офлайн-ником. Вход через Microsoft пока не добавлен.</p>
+    <h3 data-i18n="memory">Память</h3>
+    <label class="field"><span><output id="ramOut">4</output> <span data-i18n="ramText">ГБ оперативной памяти</span></span><input id="ram" type="range" min="1" max="16" step="1"></label>
+    <h3 data-i18n="folder">Папка игры</h3>
+    <label class="field"><span data-i18n="gameDirHint">Здесь будут игра, миры и Java</span><input id="gameDir" spellcheck="false" data-i18n-ph="gameDirPh" placeholder="Например D:\Games\Minecraft"></label>
+    <div class="row2"><button id="pickDir" class="ghost" data-i18n="choose">Выбрать…</button><button id="resetDir" class="ghost" data-i18n="byDefault">По умолчанию</button></div>
+    <p class="muted" id="dirInfo"></p>
+    <h3>Java</h3>
+    <label class="field"><span data-i18n="javaHint">Путь к Java (необязательно)</span><input id="javaPath" data-i18n-ph="javaPh" placeholder="Определится автоматически" spellcheck="false"></label>
+  </aside>
+
+  <section class="mods" id="mods" hidden aria-label="Моды">
+    <div class="mods-head"><h2 data-i18n="mods">Моды</h2><span class="muted" id="modsFor"></span><button id="closeMods" class="icon" aria-label="Закрыть">✕</button></div>
+    <div class="tabs" id="modsTabs">
+      <button class="tab active" data-tab="browse">Modrinth</button>
+      <button class="tab" data-tab="installed" data-i18n="installedTab">Установлено</button>
+    </div>
+    <div class="mods-pane" id="tabBrowse">
+      <input id="modSearch" class="search" data-i18n-ph="modSearchPh" placeholder="Поиск модов на Modrinth" autocomplete="off" spellcheck="false">
+      <ul class="modlist" id="modList"></ul>
+      <button id="modMore" class="ghost" data-i18n="more" hidden>Показать ещё</button>
+    </div>
+    <div class="mods-pane" id="tabInstalled" hidden>
+      <ul class="modlist" id="modInstalled"></ul>
+      <button id="openModsDir" class="ghost" data-i18n="openFolder">Открыть папку модов</button>
+    </div>
+    <p class="muted" id="modsMsg" role="status"></p>
+  </section>
+
+  <section class="logpanel" id="logpanel" hidden aria-label="Журнал"><pre id="log" aria-live="polite"></pre></section>
+
+  <div class="offline" id="offline" hidden role="status">
+    <div class="spinner"></div>
+    <p id="offlineText">Подключаюсь к Python-серверу…</p>
+    <small data-i18n="offlineHelp">Если это длится долго, запустите start.bat (Windows) или ./start.sh, либо python server.py</small>
+  </div>
+
+  <script src="i18n.js"></script>
+  <script src="bg.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

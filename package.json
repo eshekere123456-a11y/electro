@@ -1,0 +1,21 @@
+{
+  "name": "electro",
+  "version": "0.1.0",
+  "description": "Electro - Minecraft launcher (Electron + Python)",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0",
+    "electron-builder": "^25.0.0"
+  },
+  "build": {
+    "appId": "dev.electro.launcher",
+    "productName": "Electro",
+    "files": [
+      "**/*"
+    ]
+  }
+}
